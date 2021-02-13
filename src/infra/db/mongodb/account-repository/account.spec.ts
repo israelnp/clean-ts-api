@@ -1,9 +1,7 @@
 import { AddAccountRepository } from '../../../../data/protocols/add-account-repository'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { AccountMongoRepository } from './account'
-const makeSut = (): AddAccountRepository => {
-  return new AccountMongoRepository()
-}
+
 describe('Account Mongo Repository', () => {
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL)
@@ -11,6 +9,15 @@ describe('Account Mongo Repository', () => {
 
   afterAll(async () => {
     await MongoHelper.disconnect()
+  })
+
+  const makeSut = (): AddAccountRepository => {
+    return new AccountMongoRepository()
+  }
+
+  beforeEach(async () => {
+    const accountCollection = MongoHelper.getCollection('accounts')
+    await accountCollection.deleteMany({})
   })
 
   test('Should return an account on success', async () => {
